@@ -17,7 +17,7 @@
 //  - Data size can be changed using WIDTH parameter
 //  - Clock divider should be the number of clock to transfer 1 bit in Uart
 //    User should provide the clock divider number:
-//      clk_div = (clk freqency in Hz / BUADRATE) / SAMPLE RATE
+//      cfg_clk_div = (clk freqency in Hz / BUADRATE) / SAMPLE RATE
 //      example: 100MHz clock, 115200 Buadrate, 16 sample_tick per bit
 //               clk div = 100 * 1000000 / 115200 / 16  = 54.2 = 54
 //  - Configurable parity bit:
@@ -39,10 +39,10 @@ module uart_tx #(
     input               rst,
     input [1:0]         cfg_parity,
     input [1:0]         cfg_stop_bits,
+    input [15:0]        cfg_clk_div,
     input [WIDTH-1:0]   tx_din,
     input               tx_valid,
-    input [15:0]        clk_div,
-    output reg          ready,
+    output reg          tx_ready,
     output reg          uart_tx
 );
 
@@ -86,7 +86,7 @@ module uart_tx #(
         end
         else
         begin
-            if (buad_count == clk_div)
+            if (buad_count == cfg_clk_div)
             begin
                 sample_tick <= 1'b1;
                 buad_count  <= 'b0;
@@ -157,7 +157,7 @@ module uart_tx #(
             sample_cnt  <= 'b0;
             parity      <= 'b0;
             uart_tx     <= 1'b1;
-            ready       <= 1'b1;
+            tx_ready       <= 1'b1;
             stop_cnt_static <= 'b0;
         end
         else
@@ -169,7 +169,7 @@ module uart_tx #(
                     sample_cnt  <= 'b0;
                     data        <= tx_din;
                     data_cnt    <= 'b0;
-                    ready       <= ~tx_valid;
+                    tx_ready       <= ~tx_valid;
                 end
                 START:
                 begin
@@ -193,7 +193,7 @@ module uart_tx #(
                 begin
                     sample_cnt  <= sample_tick ? sample_cnt + 1 : sample_cnt;
                     uart_tx     <= 1'b1;
-                    ready       <= (sample_cnt == stop_cnt_static) ? 1'b1 : 1'b0;
+                    tx_ready       <= (sample_cnt == stop_cnt_static) ? 1'b1 : 1'b0;
                 end
             endcase
         end

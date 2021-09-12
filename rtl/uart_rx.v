@@ -17,7 +17,7 @@
 //  - Data size can be changed using WIDTH parameter
 //  - Clock divider should be the number of clock to transfer 1 bit in Uart
 //    User should provide the clock divider number:
-//      clk_div = (clk freqency in Hz / BUADRATE) / SAMPLE RATE
+//      cfg_clk_div = (clk freqency in Hz / BUADRATE) / SAMPLE RATE
 //      example: 100MHz clock, 115200 Buadrate, 16 sample_tick per bit
 //               clk div = 100 * 1000000 / 115200 / 16  = 54.2 = 54
 //  - Configurable parity bit:
@@ -39,8 +39,8 @@ module uart_rx #(
         input                   rst,
         input [1:0]             cfg_parity,
         input [1:0]             cfg_stop_bits,
+        input [15:0]            cfg_clk_div,
         input                   uart_rx,
-        input [15:0]            clk_div,
         output [WIDTH-1:0]      rx_dout,
         output reg              rx_valid,
         output reg              parity_err
@@ -90,7 +90,7 @@ module uart_rx #(
         end
         else
         begin
-            if (buad_count == clk_div)
+            if (buad_count == cfg_clk_div)
             begin
                 sample_tick <= 1'b1;
                 buad_count <= 'b0;
