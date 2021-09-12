@@ -71,6 +71,7 @@ module uart_rx #(
     wire sampled_one_bit;    // Sampled enough pulse (SAMPLE_RATE)
     wire uart_rx_sync;
     wire uart_rx_sample;
+    wire sampled_stop_bit;
 
     reg [WIDTH-1:0] data;
 
@@ -130,7 +131,8 @@ module uart_rx #(
 
     majority3 sample_majority3(.a(samples[0]), .b(samples[1]), .c(samples[2]), .o (uart_rx_sample));
 
-    assign sampled_one_bit = (sample_cnt == SAMPLE_RATE);
+    assign sampled_one_bit = sample_cnt == SAMPLE_RATE;
+    assign sampled_stop_bit = sample_cnt == stop_cnt_static;
     assign rx_dout = data;
 
     // state machine
@@ -167,7 +169,7 @@ module uart_rx #(
                 end
                 STOP:
                 begin
-                    if (sample_cnt == stop_cnt_static)
+                    if (sampled_stop_bit)
                         rx_state <= IDLE;
                 end
             endcase
@@ -196,7 +198,8 @@ module uart_rx #(
                 begin
                     sample_cnt  <= 'b0;
                     data_cnt    <= 'b0;
-                    parity      <= 'b0;
+                    parity      <= 1'b0;
+                    rx_valid    <= 1'b0;
                 end
                 START:
                 begin
@@ -208,18 +211,18 @@ module uart_rx #(
                     data_cnt    <= sampled_one_bit ? data_cnt + 1 : data_cnt;
                     data        <= sampled_one_bit ? {uart_rx_sample, data[WIDTH-1:1]} : data;
                     parity      <= sampled_one_bit ? parity ^ uart_rx_sample : parity;
-                    rx_valid    <= (data_cnt == WIDTH) & (~cfg_parity > 0);        // if no parity check, set the rxvalid here.
                 end
                 PARITY:
                 begin
                     sample_cnt  <= sampled_one_bit ? 'b0 : (sample_tick ? sample_cnt + 1 : sample_cnt);
                     parity_err  <= sampled_one_bit & (parity ^ uart_rx_sample ^ (cfg_parity == 1));
-                    rx_valid    <= sampled_one_bit;
+
                 end
                 STOP:
                 begin
                     rx_valid    <= 1'b0;
                     sample_cnt  <= sample_tick ? sample_cnt + 1 : sample_cnt;
+                    rx_valid    <= sampled_stop_bit;
                 end
             endcase
         end

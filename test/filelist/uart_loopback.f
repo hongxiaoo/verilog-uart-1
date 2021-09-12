@@ -6,3 +6,5 @@ ${UART}/rtl/uart_rx.v
 ${UART}/rtl/uart_rx_fifo.v
 ${UART}/rtl/uart_tx.v
 ${UART}/rtl/uart_tx_fifo.v
+${UART}/rtl/uart.v
+${UART}/test/testbench/uart_loopback.sv

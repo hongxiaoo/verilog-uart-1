@@ -114,7 +114,7 @@ module uart_tx #(
     begin
         if(rst)
         begin
-            tx_state    <= IDLE;
+            tx_state <= IDLE;
         end
         else
         begin
@@ -169,7 +169,8 @@ module uart_tx #(
                     sample_cnt  <= 'b0;
                     data        <= tx_din;
                     data_cnt    <= 'b0;
-                    tx_ready       <= ~tx_valid;
+                    tx_ready    <= ~tx_valid;
+                    uart_tx     <= 1'b1;
                 end
                 START:
                 begin
