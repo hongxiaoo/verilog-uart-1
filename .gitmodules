@@ -1,0 +1,3 @@
+[submodule "ip/verilog-misc-ip"]
+	path = ip/verilog-misc-ip
+	url = https://github.com/feipenghhq/verilog-misc-ip.git
