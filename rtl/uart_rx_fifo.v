@@ -30,8 +30,8 @@ module uart_rx_fifo #(
         input                   uart_rx,
         input                   rx_req,    // read the fifo
         output [WIDTH-1:0]      rx_data,
-        output reg              rx_ready,   // indicate rx fifo is not empty
-        output reg              parity_err
+        output                  rx_ready,   // indicate rx fifo is not empty
+        output                  parity_err
     );
 
     parameter FIFO_WIDTH = WIDTH + (USE_PARITY == 1 ? 1: 0);

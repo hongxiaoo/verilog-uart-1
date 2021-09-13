@@ -28,8 +28,8 @@ module uart_tx_fifo #(
         input [15:0]        cfg_clk_div,
         input [WIDTH-1:0]   tx_din,
         input               tx_req,
-        output reg          tx_ready,
-        output reg          uart_tx
+        output              tx_ready,
+        output              uart_tx
     );
 
     wire             fifo_write;

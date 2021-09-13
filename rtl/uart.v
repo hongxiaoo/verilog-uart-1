@@ -34,14 +34,14 @@ module uart #(
         // RX
         input                   rx_req,
         output [WIDTH-1:0]      rx_data,
-        output reg              rx_ready,
-        output reg              parity_err,
+        output                  rx_ready,
+        output                  parity_err,
         input                   uart_rx,
         // TX
         input                   tx_req,
         input [WIDTH-1:0]       tx_din,
-        output reg              tx_ready,
-        output reg              uart_tx
+        output                  tx_ready,
+        output                  uart_tx
     );
 
 
