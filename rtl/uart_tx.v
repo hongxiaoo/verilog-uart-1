@@ -17,7 +17,7 @@
 //  - Data size can be changed using WIDTH parameter
 //  - Clock divider should be the number of clock to transfer 1 bit in Uart
 //    User should provide the clock divider number:
-//      cfg_clk_div = (clk freqency in Hz / BUADRATE) / SAMPLE RATE
+//      cfg_clk_div = (clk frequency in Hz / BUADRATE) / SAMPLE RATE
 //      example: 100MHz clock, 115200 Buadrate, 16 sample_tick per bit
 //               clk div = 100 * 1000000 / 115200 / 16  = 54.2 = 54
 //  - Configurable parity bit:
